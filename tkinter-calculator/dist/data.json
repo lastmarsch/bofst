@@ -1,0 +1,47 @@
+{
+	"part_time": 8,
+	"departments": [
+		{
+			"name": "Department Tr",
+			"workers": [
+				{
+					"name": "Ш_Тр",
+					"time": 0.25
+				},
+				{
+					"name": "Щ_Тр",
+					"time": 0.25
+				},
+				{
+					"name": "Н_Тр",
+					"time": 0.25
+				},
+				{
+					"name": "К_Тр",
+					"time": 0.2
+				},
+				{
+					"name": "М_Тр",
+					"time": 0.1
+				}
+			]
+		},
+		{
+			"name": "Department O",
+			"workers": [
+				{
+					"name": "С_О",
+					"time": 0.25
+				},
+				{
+					"name": "Ш_1_О",
+					"time": 0.25
+				},
+				{
+					"name": "Ш_2_О",
+					"time": 0.25
+				}
+			]
+		}
+	]
+}

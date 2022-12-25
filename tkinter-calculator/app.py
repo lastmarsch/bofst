@@ -1,8 +1,36 @@
 import json
-from tkinter import END, Text, Tk, Canvas, Button
-from tkinter.ttk import Combobox, Spinbox
+from tkinter import END, LEFT, IntVar, Menu, Text, Tk, Canvas, Button, Toplevel
+from tkinter.ttk import Combobox, Spinbox, Label
 
 from calculator import calculate
+
+help_text = "How to use:\n\n" +\
+"1. Select Month (from 1 to 12).\n" +\
+"2. Select Year (from 2000 to 2022).\n" +\
+"3. Select Half of the month (\n\t1 - from 26th of the previous month to 15th of the selected month, \n\t2 - from 15th of the selected month to 25th of the selected month\n).\n" +\
+"4. Click Calculate button.\n" +\
+"5. The Result will be shown in the text area."
+
+class CustomText(Text):
+    def __init__(self, *args, **kwargs):
+        Text.__init__(self, *args, **kwargs)
+
+    def HighlightPattern(self, pattern, tag, start="1.0", end="end", regexp=True):
+        '''Apply the given tag to all text that matches the given pattern'''
+
+        start = self.index(start)
+        end = self.index(end)
+        self.mark_set("matchStart",start)
+        self.mark_set("matchEnd",end)
+        self.mark_set("searchLimit", end)
+
+        count = IntVar()
+        while True:
+            index = self.search(pattern, "matchEnd","searchLimit",count=count, regexp=regexp)
+            if index == "": break
+            self.mark_set("matchStart", index)
+            self.mark_set("matchEnd", "%s+%sc" % (index,count.get()))
+            self.tag_add(tag, "matchStart","matchEnd")
 
 class App(Tk):
 
@@ -12,14 +40,43 @@ class App(Tk):
     def __init__(self):
       super().__init__()
       self.load_data()
-      self.render()          
+      self.render()   
+
+    def help(self):
+      try:
+        self.win.focus_set()
+        return
+      except Exception:
+        pass
+         
+      self.win = Toplevel(self.hm)
+      self.win.title("Help") 
+      self.win.resizable(0,0)
+      t=Text(
+        self.win, 
+        highlightthickness=0,
+        wrap="word", 
+      )
+      print(help_text)
+      t.insert(END, help_text.strip())
+      t.config(state="disabled")
+      t.pack()
         
     def render(self):
       self.title("Timesheet calculator")
       self.geometry(f"{App.WIDTH}x{App.HEIGHT}")
       self.configure(bg = "#516BC6")
       self.protocol("WM_DELETE_WINDOW", self.on_closing)  # call .on_closing() when app gets closed
-              
+
+      # Menu
+      self.mainmenu = Menu(self) 
+      self.config(menu=self.mainmenu) 
+
+      self.win = None
+      self.hm = Menu(self.mainmenu, tearoff=0)
+      self.mainmenu.add_cascade(label="Help",menu=self.hm)
+      self.hm.add_command(label="How to use", command=self.help)
+
       self.create_canvas()
       
       self.create_title(
@@ -199,22 +256,22 @@ class App(Tk):
       year = int(self.elements["year"].get())
       half = int(self.elements["half"].get())
       
-      print(f"Month: {month}\tYear: {year}\tHalf: {half}")
+      # print(f"Month: {month}\tYear: {year}\tHalf: {half}")
       
       result = ""
       
       for department in self.departments:
-        print(department['name'])
+        # print(department['name'])
         result += f"{department['name']}\n"
         
         for worker in department['workers']:
           name, time = worker.values()
           hours = calculate(time, month, year, half, part_time=self.part_time)
           
-          print(f"{name}:\t{round(hours, 1)} hours")
+          # print(f"{name}:\t{round(hours, 1)} hours")
           result += f"{name}:\t{round(hours, 1)} hours\n"
           
-        print()
+        # print()
         result += "\n"
       
       self.resultarea.config(state="normal")

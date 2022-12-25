@@ -57,7 +57,7 @@ class App(Tk):
         highlightthickness=0,
         wrap="word", 
       )
-      print(help_text)
+      # print(help_text)
       t.insert(END, help_text.strip())
       t.config(state="disabled")
       t.pack()
@@ -214,7 +214,7 @@ class App(Tk):
       )  
       return spinbox   
       
-    def create_button(self, text='', callback=lambda: print("button"), x=0, y=0, width=0, height=0):
+    def create_button(self, text='', callback=lambda x: x, x=0, y=0, width=0, height=0):
       button = Button(
         borderwidth=0,
         bg='#64BC97',
@@ -281,9 +281,57 @@ class App(Tk):
      
       
     def load_data(self): 
-      with open('data.json') as f:
-        data = json.load(f)
+      # with open('data.json') as f:
+      #   data = json.load(f)
         
+      data = {
+        "part_time": 8,
+        "departments": [
+          {
+            "name": "Department Tr",
+            "workers": [
+              {
+                "name": "Ш_Тр",
+                "time": 0.25
+              },
+              {
+                "name": "Щ_Тр",
+                "time": 0.25
+              },
+              {
+                "name": "Н_Тр",
+                "time": 0.25
+              },
+              {
+                "name": "К_Тр",
+                "time": 0.2
+              },
+              {
+                "name": "М_Тр",
+                "time": 0.1
+              }
+            ]
+          },
+          {
+            "name": "Department O",
+            "workers": [
+              {
+                "name": "С_О",
+                "time": 0.25
+              },
+              {
+                "name": "Ш_1_О",
+                "time": 0.25
+              },
+              {
+                "name": "Ш_2_О",
+                "time": 0.25
+              }
+            ]
+          }
+        ]
+      }
+
       self.part_time = data['part_time']       # Get part_time constant
       self.departments = data['departments']   # Get departments info
 
